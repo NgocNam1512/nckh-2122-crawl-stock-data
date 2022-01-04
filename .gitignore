@@ -1,0 +1,15 @@
+/env
+.vscode
+__pycache__/
+
+# crawl data
+/crawl-data/vnquant/
+/crawl-data/cafef/*-data*
+/crawl-data/vnexpress/*-data*
+/crawl-data/thanhnien/*-data*
+/data
+/merged-data
+/labeled-data
+
+*.zip
+*.xlsx
