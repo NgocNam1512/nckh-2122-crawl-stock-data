@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 from utils import pdate2date, save_json, create_if_not_exist
 from tqdm import tqdm
+import pandas as pd
+import os
 
 URL_LIST = [
     "https://cafef.vn/timeline/112/trang-", # thoi su
@@ -15,13 +17,13 @@ URL_LIST = [
     "https://cafef.vn/timeline/39/trang-", #thi truong
 ]
 
-def cafef_crawl(prefix_id="00", output_folder="data/cafef"):
+def cafef_crawl(output_folder="data"):
     URLcafef = "https://cafef.vn"
 
     create_if_not_exist(output_folder)
     
-    suffix_id = 0
     pre_date = None
+    data_list = list()
     for i in tqdm(range(1, 2)):
         for URL in tqdm(URL_LIST):
             page = requests.get(URL + str(i) +'.chn')
@@ -46,16 +48,13 @@ def cafef_crawl(prefix_id="00", output_folder="data/cafef"):
                     all_p = results2.findAll('p')
                     main_content = summary
                     for p in all_p:
-                        main_content += p.text +"\n"
+                        main_content += p.text
                     
-                    id = "".join([prefix_id, date, f"{suffix_id:03}"])
                     source="cafef"
 
-                    save_json(id, title, main_content, date, source, output_folder)
-                    if date == pre_date:
-                        suffix_id += 1
-                    else:
-                        pre_date = date
-                        suffix_id = 0
+                    data_list.append([title, main_content, date, source])
                 except:
                     print("Error at:", link)
+
+    df_data = pd.DataFrame(data_list, columns=["title", "content", "date", "source"])
+    df_data.to_csv(os.path.join(output_folder, "cafef.csv"))
