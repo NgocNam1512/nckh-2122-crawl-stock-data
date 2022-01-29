@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-from utils import pdate2date, save_json, create_if_not_exist
+from utils import create_if_not_exist
 from tqdm import tqdm
 import pandas as pd
 import os
@@ -17,14 +17,19 @@ URL_LIST = [
     "https://cafef.vn/timeline/39/trang-", #thi truong
 ]
 
-def cafef_crawl(output_folder="data"):
+
+def pdate2date(pdate:str) -> str:
+    datetime = pdate.split(" ")[0]
+    date, month, year = datetime.split("-")
+    return year + month + date
+
+
+def cafef_crawl(output_folder="data/cafef"):
     URLcafef = "https://cafef.vn"
 
     create_if_not_exist(output_folder)
-    
-    pre_date = None
-    data_list = list()
-    for i in tqdm(range(1, 2)):
+    for i in tqdm(range(117, 1100)):
+        data_list = list()
         for URL in tqdm(URL_LIST):
             page = requests.get(URL + str(i) +'.chn')
 
@@ -56,5 +61,7 @@ def cafef_crawl(output_folder="data"):
                 except:
                     print("Error at:", link)
 
-    df_data = pd.DataFrame(data_list, columns=["title", "content", "date", "source"])
-    df_data.to_csv(os.path.join(output_folder, "cafef.csv"))
+        df_data = pd.DataFrame(data_list, columns=["title", "content", "date", "source"])
+        df_data.to_csv(os.path.join(output_folder, f"cafef_{i}.csv"), index=False)
+
+cafef_crawl()

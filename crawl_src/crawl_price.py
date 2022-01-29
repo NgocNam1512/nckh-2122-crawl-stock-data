@@ -53,7 +53,7 @@ def main():
         data_list.append(crawl_price(symbol, start_date, end_date))
     
     full_data = pd.concat(data_list, ignore_index=True)
-    full_data.to_csv("data/price_data.csv")
+    full_data.to_csv("data/price_data.csv", index=False)
 
 
 if __name__=="__main__":
