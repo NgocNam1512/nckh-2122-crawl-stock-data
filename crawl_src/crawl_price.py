@@ -45,15 +45,15 @@ def get_list_symbol(path):
 
 def main():
     symbol_list = get_list_symbol("symbol_list.txt")
-    start_date = "01/01/2021"
-    end_date = "31/12/2021"
+    start_date = "01/01/2020"
+    end_date = "31/12/2020"
 
     data_list = []
     for symbol in (symbol_list):
         data_list.append(crawl_price(symbol, start_date, end_date))
     
     full_data = pd.concat(data_list, ignore_index=True)
-    full_data.to_csv("data/price_data.csv", index=False)
+    full_data.to_csv("data/price_data_2020.csv", index=False)
 
 
 if __name__=="__main__":
